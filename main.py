@@ -55,10 +55,32 @@ class LinkedList:
             return
 
         raise IndexError("LinkedList assignment index out of range")
-
+    
     def insert(self, index, item):
-        # This is left as an exercise for the reader.
-        pass
+        if 0 < index < self.numItems:
+          cursor = self.first.getNext()
+          for i in range(index - 1):
+              cursor = cursor.getNext()
+
+          toInsert = cursor
+          cursor = cursor.getNext()
+          newNode = LinkedList.__Node(item)
+          toInsert.setNext(newNode)
+          newNode.setNext(cursor)
+          self.numItems += 1
+          return
+
+        elif index == 0:
+          toInsert = self.first
+          cursor = toInsert
+          cursor = cursor.getNext()
+          newNode = LinkedList.__Node(item)
+          toInsert.setNext(newNode)
+          newNode.setNext(cursor)
+          self.numItems += 1
+
+        elif index > self.numItems:
+          self.append(item) 
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -67,25 +89,73 @@ class LinkedList:
 
         result = LinkedList()
 
-        #TODO: Finish this.
+        cursor_self = self.first.getNext()
+        cursor_other = other.first.getNext()
+      
+        while cursor_self is not None:
+          result.append(cursor_self.getItem())
+          cursor_self = cursor_self.getNext()
+
+        while cursor_other is not None:
+          result.append(cursor_other.getItem())
+          cursor_other = cursor_other.getNext()
 
         return result
 
     def __contains__(self, item):
-        # This is left as an exercise for the reader.
-        pass
+      if self.numItems == 0:
+        return False
+        
+      cursor = self.first.getNext()
+
+      while cursor is not None:
+        if cursor.getItem() == item:
+          return True
+
+        cursor = cursor.getNext()
+        
+      return False
 
     def __delitem__(self, index):
-        # This is left as an exercise for the reader.
-        pass
+      if 0 < index < self.numItems:
+          cursor = self.first.getNext()
+          for i in range(index - 1):
+              cursor = cursor.getNext()
 
+          toDelete = cursor.getNext()
+          cursor.setNext(cursor.getNext().getNext())
+          toDelete.setNext(None)
+          self.numItems -= 1
+          return
+      
+      elif index == 0:
+        toDelete = self.first.getNext()
+        self.first.setNext(toDelete.getNext())
+        toDelete.setNext(None)
+        self.numItems -= 1
+        return
+        
     def __eq__(self, other):
-        # This is left as an exercise for the reader.
-        pass
+      if type(self) != type(other):
+        return False
 
+      if self.numItems != other.numItems:
+        return False
+
+      cursor_self = self.first.getNext()
+      cursor_other = other.first.getNext()
+      
+      while cursor_self is not None:
+        if cursor_self.getItem() != cursor_other.getItem():
+          return False
+
+        cursor_self = cursor_self.getNext()
+        cursor_other = cursor_other.getNext()
+
+      return True
+        
     def __len__(self):
-        # This is left as an exercise for the reader.
-        pass
+        return self.numItems
 
     def append(self, item):
         node = LinkedList.__Node(item)
@@ -94,9 +164,32 @@ class LinkedList:
         self.numItems += 1
 
     def __str__(self):
-        # This is left as an exercise for the reader.
-        pass
+        cursor = self.first.getNext()
+        outString = '['
 
+        while cursor is not None:
+          outString += (str(cursor.getItem()))
+          outString += (",")
+          
+          cursor = cursor.getNext()
+
+        outString = outString.rstrip(",")
+        outString += ("]")
+
+        return outString
+
+    def swap(self, i1, i2):
+      temp = self[i1]
+      self[i1] = self[i2]
+      self[i2] = temp
+
+    def isSorted(self):
+      cursor = self.first.getNext()
+      while cursor.getNext() is not None:
+        if cursor.getItem() > cursor.getNext.getItem():
+          return False
+        cursor = cursor.getNext()
+      return True
 
 def main():
     lst = LinkedList()
@@ -171,6 +264,15 @@ def main():
         print("Test 10 Passed")
     else:
         print("Test 10 Failed")
+
+    lstCopy = lst
+    lstCopy.swap(1, 2)
+
+    if lstCopy != lst4:
+        print("Test 11 Passed")
+    else:
+        print("Test 11 Failed")
+
 
     print(lst)
     print(lst4)
